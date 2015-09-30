@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+
+        <style>
+        .bar {
+          fill: steelblue;
+        }
+
+        .bar:hover {
+          fill: green;
+        }
+
+        .axis text {
+          font: 10px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+        </style>
+
+    </head>
+
+    <body>
+
+        <svg class="chart"></svg>
+
+        <script>
+        // Code here executes before starting to load data
+
+        var margin = {top: 20, right: 30, bottom: 30, left: 40};
+        var chartWidth = 960 - margin.left - margin.right; // gives inner width (after margins)
+        var chartHeight = 500 - margin.top - margin.bottom; // gives inner height (after margins)
+
+
+        var yScale = d3.scale.linear()
+            .range([chartHeight, 0]); // SVG's y axis has 0 at top
+            // can't set domain yet; depends on data
+
+        var xScale = d3.scale.ordinal()
+            .rangeRoundBands([0, chartWidth], .1); //divides chartWidth into evenly sized bands with padding of .1
+
+        var xAxis = d3.svg.axis() // "rubber stamp" function that produces x-axis
+            .scale(xScale)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis() // "rubber stamp" function that produces y-axis
+            .scale(yScale)
+            .orient("left");
+
+        var chart = d3.select(".chart")
+            .attr("width", chartWidth + margin.left + margin.right) //make the chart element the outer width (chart data + margins)
+            .attr("height", chartHeight + margin.top + margin.bottom) // make the chart element the outer height (chart data + margins)
+          .append("g") //add a g element to offset the chart data area by the margin size
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+        d3.tsv("letters.tsv", type, function(error, data){
+            //Code here executes after data has loaded
+
+            // the TSV parser apparently reads in the column names, so we can use d.frequency
+            yScale.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+            xScale.domain(data.map(function(d) { return d.letter; })); //gets an array of all the letters in the data
+
+            // Add in axes
+            chart.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0, " + chartHeight + ")")
+                .call(xAxis); // produce x-axis using "rubber stamp" function
+
+            chart.append("g")
+                .attr("class", "y axis")
+                .call(yAxis) // produce y-axis using "rubber stamp" function
+              .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Frequency");
+
+            var barWidth = chartWidth / data.length; //bar width is now variable
+
+
+            var bar = chart.selectAll(".bar")
+                .data(data)
+              .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return xScale(d.letter); })
+                .attr("y", function(d) { return yScale(d.frequency); })
+                .attr("width", xScale.rangeBand())
+                .attr("height", function(d) { return chartHeight - yScale(d.frequency); });
+
+
+
+
+
+        });
+
+        // Code here executes while data is loading
+        function type(d) {
+          d.frequency = +d.frequency; // coerces string (from tsv) to number
+          return d;
+        }
+
+        </script>
+
+        <!-- copy/pasted from tutorial -->
+        <!-- <script>
+
+        var width = 960,
+            height = 500;
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var chart = d3.select(".chart")
+            .attr("width", width)
+            .attr("height", height);
+
+        d3.tsv("letters.tsv", type, function(error, data) {
+          x.domain(data.map(function(d) { return d.name; }));
+          y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+          var bar = chart.selectAll("g")
+              .data(data)
+            .enter().append("g")
+              .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
+
+          bar.append("rect")
+              .attr("y", function(d) { return y(d.value); })
+              .attr("height", function(d) { return height - y(d.value); })
+              .attr("width", x.rangeBand());
+
+          bar.append("text")
+              .attr("x", x.rangeBand() / 2)
+              .attr("y", function(d) { return y(d.value) + 3; })
+              .attr("dy", ".75em")
+              .text(function(d) { return d.value; });
+        });
+
+        function type(d) {
+          d.value = +d.value; // coerce to number
+          return d;
+        }
+
+        </script> -->
+
+    </body>
+</html>
