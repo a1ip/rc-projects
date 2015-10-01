@@ -4,6 +4,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
         <style>
+        body {
+          font-family: sans-serif;
+        }
+
         .bar {
           fill: steelblue;
         }
@@ -13,7 +17,7 @@
         }
 
         .axis text {
-          font: 10px sans-serif;
+          font: 12px sans-serif;
         }
 
         .axis path,
@@ -122,7 +126,8 @@
                 .attr("x", function(d) { return xScale(d.Letter); })
                 .attr("y", function(d) { return yScale(d.frequency); })
                 .attr("width", xScale.rangeBand())
-                .attr("height", function(d) { return chartHeight - yScale(d.frequency); });
+                .attr("height", function(d) { return chartHeight - yScale(d.frequency); })
+                .append("title").text(function(d) { return d.Letter + ": " + d.frequency + "%"; }); //tooltips
 
         }
 
