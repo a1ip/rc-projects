@@ -118,6 +118,7 @@
             // add new elements with enter selection
             bar.enter().append("rect")
                 .attr("class", "bar")
+              .append("title");
 
             console.log("Enter: ", bar.enter());
 
@@ -127,7 +128,8 @@
                 .attr("y", function(d) { return yScale(d.frequency); })
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d) { return chartHeight - yScale(d.frequency); })
-                .append("title").text(function(d) { return d.Letter + ": " + d.frequency + "%"; }); //tooltips
+              .select("title").text(function(d) { return d.Letter + ": " + d.frequency + "%"; });
+              
 
         }
 
