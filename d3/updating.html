@@ -47,10 +47,12 @@
 
         function updateLanguage(language) {
 
-            var data = letterData;
+            var data = letterData.map(function(d) { 
+                return {Letter: d.Letter, frequency: d[language]};
+            });
 
             // the TSV parser apparently reads in the column names, so we can use d.frequency
-            yScale.domain([0, d3.max(data, function(d) { return d[language]; })]);
+            yScale.domain([0, d3.max(data, function(d) { return d.frequency; })]);
             console.log("yScale.domain: ", yScale.domain());
 
             xScale.domain(data.map(function(d) { return d.Letter; })); //gets an array of all the letters in the data
@@ -93,9 +95,9 @@
 
             bar
                 .attr("x", function(d) { return xScale(d.Letter); })
-                .attr("y", function(d) { return yScale(d[language]); })
+                .attr("y", function(d) { return yScale(d.frequency); })
                 .attr("width", xScale.rangeBand())
-                .attr("height", function(d) { return chartHeight - yScale(d[language]); });
+                .attr("height", function(d) { return chartHeight - yScale(d.frequency); });
 
         }
 
