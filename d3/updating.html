@@ -28,10 +28,13 @@
 
     <body>
         <div>
-        <select id = "selectedLang" onchange="updateLanguage(this.options[this.selectedIndex].value)">
+        <!-- <select id = "selectedLang" onchange="updateLanguage(this.options[this.selectedIndex].value)">
           <option value="Italian">Italian</option>
           <option value="French">French</option> 
           <option value="German">German</option>
+        </select> -->
+        Relative frequency of letters in 
+        <select id = "testSelect" onchange="updateLanguage(this.options[this.selectedIndex].value)">
         </select>
         </div>
 
@@ -123,7 +126,10 @@
 
         }
 
-        var currentLang = "Italian"
+        // default language
+        var currentLang = "French"
+
+
 
         var margin = {top: 20, right: 30, bottom: 30, left: 40};
         var chartWidth = 960 - margin.left - margin.right; // gives inner width (after margins)
@@ -157,6 +163,18 @@
             //Code here executes after data has loaded
             letterData = data;
 
+            // Set up selection options for each language in the dataset
+            var selector = d3.select("#testSelect");
+            //console.log(Object.keys(data[0]));
+            Object.keys(data[0]).forEach( function(lang) {
+              if (lang === "Letter") return;
+              selector.append("option")
+                .attr("value", lang)
+                .text(lang);
+            });
+            
+
+            // update graph with initial language
             updateLanguage(currentLang);
 
 
