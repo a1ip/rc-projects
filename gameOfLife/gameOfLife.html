@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Game of Life</title>
+
+<style>
+    body {
+        font-family: sans-serif;
+        background-color: #196464;
+        color: white;
+    }
+
+    main {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    h1 {
+        /*
+        float:left;
+        margin-bottom:20px;
+        */
+    }
+
+    #controls {
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    #grid {
+        background-color: white;
+        padding: 5px;
+    }
+
+    .row {
+        height: 50px;
+        border: 1px solid red;
+    }
+
+    .cell {
+        margin: 0px;
+        padding: 0px;
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        float:left;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+    <main>
+        <h1>The Game of Life</h1>
+
+
+        <div id="controls">
+            <form>
+                Columns: <input type="number" name="columns" min="2" max="20" value="10">
+                Rows: <input type="number" name="rows" min="2" max="20" value="10">
+                <button type="button" name="resize" onclick="resizeGrid(columns.value, rows.value)">Resize grid</button>
+            </form>
+            <p><button type="button" name="evolve">Evolve</button></p>
+        </div>
+
+        <div id="grid">
+            <!--div class="cell"></div-->
+        </div>
+
+
+    </main>
+
+
+    <script>
+        resizeGrid(10, 10);
+
+
+
+        function resizeGrid(cols, rows) {
+            console.log("C: " + String(cols));
+            console.log("R: " + String(rows));
+
+            var grid = document.getElementById("grid");
+
+            // Clear grid completely
+            while (grid.lastChild) {
+              grid.removeChild(grid.lastChild);
+            }
+
+            // Insert row divs
+            for (var r = 0; r < rows; r++) {
+                var thisRow = document.createElement("div");
+                thisRow.className = "row";
+                grid.appendChild(thisRow);
+
+                for (var c = 0; c < cols; c++) {
+                    var thisCell = document.createElement("div");
+                    thisCell.className = "cell";
+                    thisRow.appendChild(thisCell);
+                }
+            }
+
+
+        }
+
+
+    </script>
+</body>
+
+</html>
