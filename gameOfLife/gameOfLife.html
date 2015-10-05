@@ -15,20 +15,36 @@
         margin: 0 auto;
     }
 
-    h1 {
-        text-align: center;
+    h1 a {
         /*
+        text-align: center;
         float:left;
         margin-bottom:20px;
         */
+        text-decoration: none;
+        color:white;
+    }
+
+    h1 a:hover {
+        text-decoration: underline;
+    }
+
+    header {
+        width: 45%;
+        float:left;
+        /*text-align: center;*/
     }
 
     #controls {
+        width: 45%;
         margin: 10px auto;
         text-align: center;
+        float:right;
+
     }
 
     #grid {
+        clear:both;
         background-color: white;
         margin: 0 auto;
         height: 75vh;
@@ -60,8 +76,11 @@
 <body>
 
     <main>
-        <h1>The Game of Life</h1>
+        <header>
+            <h1><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+                    title="Conway's Game of Life on Wikipedia">The Game of Life</a></h1>
 
+        </header>
 
         <div id="controls">
             <form>
@@ -85,11 +104,16 @@
 
 
     <script>
-        resizeGrid(10, 10);
+
+        var nColumns = 10;
+        var nRows = 10;
+        resizeGrid(nColumns, nRows);
 
         function resizeGrid(cols, rows) {
-            console.log("C: " + String(cols));
-            console.log("R: " + String(rows));
+            nColumns = cols;
+            nRows = rows;
+            console.log("C: " + String(nColumns));
+            console.log("R: " + String(nRows));
 
             var grid = document.getElementById("grid");
 
@@ -119,7 +143,7 @@
                     thisCell.style.width = String(cellWidth) + "%";
                     thisCell.style.height = "100%";
                     //thisCell.onclick = function() { this.classList.toggle("alive"); };
-                    thisCell.onclick = function() { findNeighbors(this.id); };
+                    thisCell.onclick = function() { countAliveNeighbors(this.id); };
                     thisRow.appendChild(thisCell);
 
 
@@ -128,6 +152,23 @@
                     }
                 }
             }
+        }
+
+        function countAliveNeighbors(cellId) {
+            var neighborList = findNeighbors(cellId);
+            var liveOnes = 0;
+            neighborList.forEach( function(cellId) {
+                var neighbor = document.getElementById(cellId);
+                if (neighbor === null) {
+                    console.Log("ERROR Can't find cell " + cellId);
+                    return;
+                }
+                if (neighbor.classList.contains("alive")) {
+                    liveOnes += 1;
+                }
+            });
+            console.log("liveOnes: ", liveOnes);
+            return liveOnes;
         }
 
         function findNeighbors(cellId) {
@@ -145,8 +186,13 @@
                 // newR = oldR + delR
                 var newR = coords[0] + dels[0];
                 var newC = coords[1] + dels[1];
-                var newId = getCellId([newR, newC]); //the new ID may not exist!
-                neighborList.push(newId);
+                if (newR < 0 || newC < 0 || newR >= nRows || newC >= nColumns) {
+                    //calculated cell is off the grid (doesn't exist)
+                    console.log("Cell doesn't exist: ", getCellId([newR, newC]));
+                } else {
+                    var newId = getCellId([newR, newC]);
+                    neighborList.push(newId);
+                }
             });
 
             console.log(neighborList);
