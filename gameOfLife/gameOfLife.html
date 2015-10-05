@@ -36,7 +36,6 @@
     }
 
     .row {
-        height:10%;
         /*border: 1px solid red;*/
         overflow: auto;
     }
@@ -66,11 +65,15 @@
 
         <div id="controls">
             <form>
-                Columns: <input type="number" name="columns" min="2" max="20" value="10">
-                Rows: <input type="number" name="rows" min="2" max="20" value="10">
+                Columns: <input type="number" name="columns" min="2" max="50" value="10">
+                Rows: <input type="number" name="rows" min="2" max="50" value="10">
                 <button type="button" name="resize" onclick="resizeGrid(columns.value, rows.value)">Resize grid</button>
             </form>
-            <p><button type="button" name="evolve">Evolve</button></p>
+            <p>
+                <button type="button" name="clear" onclick="clearGrid()">Clear grid</button>
+                <button type="button" name="fill" onclick="fillGrid()">Fill grid</button>
+                <button type="button" name="random" onclick="randomValues()">Random values</button>
+                <button type="button" name="evolve">Evolve</button></p>
         </div>
 
         <div id="grid">
@@ -93,6 +96,9 @@
             var cellWidth = 1 / cols * 100;
             console.log("cellWidth: " + String(cellWidth));
 
+            var cellHeight = 1 / rows * 100;
+            console.log("cellHeight: " + String(cellHeight));
+
             // Clear grid completely
             while (grid.lastChild) {
               grid.removeChild(grid.lastChild);
@@ -102,6 +108,7 @@
             for (var r = 0; r < rows; r++) {
                 var thisRow = document.createElement("div");
                 thisRow.className = "row";
+                thisRow.style.height = String(cellHeight) + "%";
                 grid.appendChild(thisRow);
 
                 // Insert cell divs
@@ -122,6 +129,29 @@
             }
 
 
+        }
+
+
+        function clearGrid() {
+            var allCells = document.getElementsByClassName("cell");
+            for (var i = 0; i < allCells.length; i++) {
+                allCells[i].classList.remove("alive");
+            }
+        }
+
+        function fillGrid() {
+            var allCells = document.getElementsByClassName("cell");
+            for (var i = 0; i < allCells.length; i++) {
+                allCells[i].classList.add("alive");
+            }
+        }
+
+        function randomValues() {
+            var allCells = document.getElementsByClassName("cell");
+            for (var i = 0; i < allCells.length; i++) {
+                var randomBool = Math.random() >= 0.5;
+                allCells[i].classList.toggle("alive", randomBool);
+            }
         }
 
 
