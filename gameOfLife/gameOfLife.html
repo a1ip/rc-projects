@@ -11,7 +11,7 @@
     }
 
     main {
-        width: 90%;
+        max-width: 90%;
         margin: 0 auto;
     }
 
@@ -33,17 +33,22 @@
     }
 
     .row {
-        height: 50px;
+        /*height: 50px;*/
         border: 1px solid red;
+        overflow: auto;
     }
 
     .cell {
         margin: 0px;
         padding: 0px;
-        width: 50px;
-        height: 50px;
-        border: 1px solid black;
+        /*width: 50px;*/
+        /*height: 100%;*/
+        /*border: 1px solid black;*/
         float:left;
+    }
+
+    .alive {
+        background-color: black;
     }
 
 </style>
@@ -84,6 +89,9 @@
 
             var grid = document.getElementById("grid");
 
+            var cellWidth = 1 / cols * 100;
+            console.log("cellWidth: " + String(cellWidth));
+
             // Clear grid completely
             while (grid.lastChild) {
               grid.removeChild(grid.lastChild);
@@ -95,13 +103,33 @@
                 thisRow.className = "row";
                 grid.appendChild(thisRow);
 
+                // Insert cell divs
                 for (var c = 0; c < cols; c++) {
                     var thisCell = document.createElement("div");
-                    thisCell.className = "cell";
+                    thisCell.classList.add("cell");
+                    thisCell.id = "c" + String(c) + "r" + String(r)
+                    thisCell.style.width = String(cellWidth) + "%";
+                    thisCell.style.height = "50px";
+                    thisCell.onclick = function() { this.classList.toggle("alive"); };
                     thisRow.appendChild(thisCell);
+
+
+                    if (r % 2 === 0 && c % 2 === 0 || r % 2 === 1 && c %2 === 1) {
+                        thisCell.classList.add("alive");
+                    }
                 }
+                // how to clear floats?
             }
 
+
+        }
+
+        function printSomething(cellId) {
+            console.log("cell.id: " + cellId);
+        }
+
+        function toggleAlive(cell) {
+            cell.classList.toggle("alive");
 
         }
 
