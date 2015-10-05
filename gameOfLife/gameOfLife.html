@@ -115,10 +115,11 @@
                 for (var c = 0; c < cols; c++) {
                     var thisCell = document.createElement("div");
                     thisCell.classList.add("cell");
-                    thisCell.id = "c" + String(c) + "r" + String(r)
+                    thisCell.id = "r" + String(r) + "-c" + String(c)
                     thisCell.style.width = String(cellWidth) + "%";
                     thisCell.style.height = "100%";
-                    thisCell.onclick = function() { this.classList.toggle("alive"); };
+                    //thisCell.onclick = function() { this.classList.toggle("alive"); };
+                    thisCell.onclick = function() { findNeighbors(this.id); };
                     thisRow.appendChild(thisCell);
 
 
@@ -127,10 +128,43 @@
                     }
                 }
             }
-
-
         }
 
+        function findNeighbors(cellId) {
+            var coords = parseCellId(cellId);
+            console.log("coords", coords);
+
+            var deltaList = [   [-1,-1],[-1,0], [-1,1],
+        				        [0,-1],         [0,1],
+        				        [1,-1], [1,0],  [1,1]
+                            ];
+
+            var neighborList = []; //list of IDs
+
+            deltaList.forEach( function(dels) {
+                // newR = oldR + delR
+                var newR = coords[0] + dels[0];
+                var newC = coords[1] + dels[1];
+                var newId = getCellId([newR, newC]); //the new ID may not exist!
+                neighborList.push(newId);
+            });
+
+            console.log(neighborList);
+            return neighborList;
+        }
+
+        function parseCellId(cellId) {
+            var splitted = cellId.split("-");
+            console.log(splitted);
+            var thisR = parseInt(splitted[0].slice(1));
+            var thisC = parseInt(splitted[1].slice(1));
+            console.log("thisR: ", thisR, " thisC: ", thisC);
+            return [thisR, thisC];
+        }
+
+        function getCellId(coordList) {
+            return "r" + String(coordList[0]) + "-c" + String(coordList[1]);
+        }
 
         function clearGrid() {
             var allCells = document.getElementsByClassName("cell");
@@ -153,6 +187,7 @@
                 allCells[i].classList.toggle("alive", randomBool);
             }
         }
+
 
 
 
