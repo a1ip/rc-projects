@@ -143,7 +143,7 @@
                     thisCell.style.width = String(cellWidth) + "%";
                     thisCell.style.height = "100%";
                     //thisCell.onclick = function() { this.classList.toggle("alive"); };
-                    thisCell.onclick = function() { countAliveNeighbors(this.id); };
+                    thisCell.onclick = function() { updateCell(this.id); };
                     thisRow.appendChild(thisCell);
 
 
@@ -154,11 +154,34 @@
             }
         }
 
+        function updateCell(cellId) {
+            var pals = countAliveNeighbors(cellId);
+            var cell = getCell(cellId);
+
+            if (cell.classList.contains("alive")) { //cell is alive
+                if (pals < 2 || pals > 3) { // too few || too many
+                    console.log("Cell " + cellId + " dies")
+                    cell.classList.remove("alive"); //cell dies
+                } else {
+                    console.log("Cell " + cellId + " lives on")
+                }
+            } else { //cell is dead
+                if (pals === 3) {
+                    console.log("Cell " + cellId + " is born")
+                    cell.classList.add("alive"); //cell is born
+                } else {
+                    console.log("Cell " + cellId + " stays dead")
+                }
+            }
+
+            return cell.classList.contains("alive");
+        }
+
         function countAliveNeighbors(cellId) {
             var neighborList = findNeighbors(cellId);
             var liveOnes = 0;
             neighborList.forEach( function(cellId) {
-                var neighbor = document.getElementById(cellId);
+                var neighbor = getCell(cellId);
                 if (neighbor === null) {
                     console.Log("ERROR Can't find cell " + cellId);
                     return;
@@ -167,13 +190,13 @@
                     liveOnes += 1;
                 }
             });
-            console.log("liveOnes: ", liveOnes);
+            //console.log("liveOnes: ", liveOnes);
             return liveOnes;
         }
 
         function findNeighbors(cellId) {
             var coords = parseCellId(cellId);
-            console.log("coords", coords);
+            //console.log("coords", coords);
 
             var deltaList = [   [-1,-1],[-1,0], [-1,1],
         				        [0,-1],         [0,1],
@@ -188,28 +211,32 @@
                 var newC = coords[1] + dels[1];
                 if (newR < 0 || newC < 0 || newR >= nRows || newC >= nColumns) {
                     //calculated cell is off the grid (doesn't exist)
-                    console.log("Cell doesn't exist: ", getCellId([newR, newC]));
+                    //console.log("Cell doesn't exist: ", getCellId([newR, newC]));
                 } else {
                     var newId = getCellId([newR, newC]);
                     neighborList.push(newId);
                 }
             });
 
-            console.log(neighborList);
+            //console.log(neighborList);
             return neighborList;
         }
 
         function parseCellId(cellId) {
             var splitted = cellId.split("-");
-            console.log(splitted);
+            //console.log(splitted);
             var thisR = parseInt(splitted[0].slice(1));
             var thisC = parseInt(splitted[1].slice(1));
-            console.log("thisR: ", thisR, " thisC: ", thisC);
+            //console.log("thisR: ", thisR, " thisC: ", thisC);
             return [thisR, thisC];
         }
 
         function getCellId(coordList) {
             return "r" + String(coordList[0]) + "-c" + String(coordList[1]);
+        }
+
+        function getCell(cellId) {
+            return document.getElementById(cellId);
         }
 
         function clearGrid() {
