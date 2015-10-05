@@ -30,14 +30,20 @@
     }
 
     header {
-        width: 45%;
+        max-width: 50%;
         float:left;
+        padding-left: 10px;
+        /*border:1px solid white;*/
         /*text-align: center;*/
     }
 
+    button {
+        padding: 5px;
+    }
+
     #controls {
-        width: 45%;
-        margin: 10px auto;
+        min-width: 40%;
+        padding: 20px 10px;
         text-align: center;
         float:right;
 
@@ -79,20 +85,25 @@
         <header>
             <h1><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
                     title="Conway's Game of Life on Wikipedia">The Game of Life</a></h1>
-
+            <p>Black cells are alive, white ones are dead.<br>Click a cell to change its status.</p>
         </header>
 
         <div id="controls">
             <form>
-                Columns: <input type="number" name="columns" min="2" max="50" value="10">
-                Rows: <input type="number" name="rows" min="2" max="50" value="10">
+                Columns: <input type="number" name="columns" min="2" max="50" value="20">
+                Rows: <input type="number" name="rows" min="2" max="50" value="20">
                 <button type="button" name="resize" onclick="resizeGrid(columns.value, rows.value)">Resize grid</button>
             </form>
             <p>
-                <button type="button" name="clear" onclick="clearGrid()">Clear grid</button>
-                <button type="button" name="fill" onclick="fillGrid()">Fill grid</button>
-                <button type="button" name="random" onclick="randomValues()">Random values</button>
-                <button type="button" name="evolve" onclick="updateGrid()">Evolve</button></p>
+                <button type="button" name="clear" onclick="clearGrid()">Clear all</button>
+                <button type="button" name="fill" onclick="fillGrid()">Fill all</button>
+                <button type="button" name="checker" onclick="checkerGrid()">Checkerboard</button>
+                <button type="button" name="random" onclick="randomValues()">Random</button>
+            </p>
+            <p>
+                <button type="button" name="evolve" onclick="updateGrid()">Evolve once</button>
+                <button type="button" name="start" onclick="startEvolving(this)">Start evolving</button>
+            </p>
         </div>
 
         <div id="grid">
@@ -105,8 +116,8 @@
 
     <script>
 
-        var nColumns = 10;
-        var nRows = 10;
+        var nColumns = 20;
+        var nRows = 20;
         resizeGrid(nColumns, nRows);
 
         function resizeGrid(cols, rows) {
@@ -147,11 +158,31 @@
                     thisRow.appendChild(thisCell);
 
 
-                    if (r % 2 === 0 && c % 2 === 0 || r % 2 === 1 && c %2 === 1) {
-                        thisCell.classList.add("alive");
-                    }
+
                 }
+
             }
+
+            // Randomly initiate grid
+            randomValues();
+        }
+
+        function startEvolving(button) {
+            var isRunning = true;
+
+            button.innerHTML = "Stop evolving";
+            console.log(button.onclick);
+            button.onclick = function() {
+                console.log("clicked");
+                isRunning = false;
+            }
+            console.log(button.onclick);
+            // while (isRunning) {
+            //     setTimeout(function() {
+            //         console.log(button.name);
+            //     }, 2000);
+            // }
+            console.log(isRunning);
         }
 
         function updateGrid() {
@@ -291,6 +322,20 @@
             var allCells = document.getElementsByClassName("cell");
             for (var i = 0; i < allCells.length; i++) {
                 allCells[i].classList.add("alive");
+            }
+        }
+
+        function checkerGrid() {
+            var allCells = document.getElementsByClassName("cell");
+            for (var i = 0; i < allCells.length; i++) {
+                var thisCell = allCells[i];
+                var coords = parseCellId(thisCell.id);
+                var r = coords[0], c = coords[1];
+                if (r % 2 === 0 && c % 2 === 0 || r % 2 === 1 && c %2 === 1) {
+                    thisCell.classList.add("alive");
+                } else {
+                    thisCell.classList.remove("alive");
+                }
             }
         }
 
