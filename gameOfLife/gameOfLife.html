@@ -92,7 +92,7 @@
                 <button type="button" name="clear" onclick="clearGrid()">Clear grid</button>
                 <button type="button" name="fill" onclick="fillGrid()">Fill grid</button>
                 <button type="button" name="random" onclick="randomValues()">Random values</button>
-                <button type="button" name="evolve">Evolve</button></p>
+                <button type="button" name="evolve" onclick="updateGrid()">Evolve</button></p>
         </div>
 
         <div id="grid">
@@ -142,8 +142,8 @@
                     thisCell.id = "r" + String(r) + "-c" + String(c)
                     thisCell.style.width = String(cellWidth) + "%";
                     thisCell.style.height = "100%";
-                    //thisCell.onclick = function() { this.classList.toggle("alive"); };
-                    thisCell.onclick = function() { updateCell(this.id); };
+                    thisCell.onclick = function() { this.classList.toggle("alive"); };
+                    //thisCell.onclick = function() { getNewStatus(this.id); };
                     thisRow.appendChild(thisCell);
 
 
@@ -154,7 +154,48 @@
             }
         }
 
-        function updateCell(cellId) {
+        function updateGrid() {
+            var allCells = document.getElementsByClassName("cell");
+            var newStatuses = {}
+            for (var i = 0; i < allCells.length; i++) {
+                //iterate once to get the new statuses
+                var thisId = allCells[i].id;
+                newStatuses[thisId] = getNewStatus(thisId);
+            }
+            for (var i = 0; i < allCells.length; i++) {
+                //iterate again to set new statuses
+                var thisCell = allCells[i];
+                var willLive = newStatuses[thisCell.id];
+                thisCell.classList.toggle("alive", willLive); //adds if willLive == true, removes if false
+            }
+
+        }
+
+        function getNewStatus(cellId) {
+            var pals = countAliveNeighbors(cellId);
+            var cell = getCell(cellId);
+            var isAlive = cell.classList.contains("alive");
+
+            if (isAlive) { //cell is alive
+                if (pals < 2 || pals > 3) { // too few || too many
+                    //console.log("Cell " + cellId + " dies")
+                    isAlive = false; //cell dies
+                } else {
+                    //console.log("Cell " + cellId + " stays alive")
+                }
+            } else { //cell is dead
+                if (pals === 3) {
+                    //console.log("Cell " + cellId + " is born")
+                    isAlive = true; //cell is born
+                } else {
+                    //console.log("Cell " + cellId + " stays dead")
+                }
+            }
+
+            return isAlive;
+        }
+
+        function updateCell(cellId) { //OLD
             var pals = countAliveNeighbors(cellId);
             var cell = getCell(cellId);
 
