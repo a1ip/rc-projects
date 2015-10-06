@@ -64,11 +64,20 @@
 
     }
 
+    #main-buttons {
+        font-size:1.3em;
+    }
+
+    #main-buttons input {
+        width: 50px;
+    }
+
     #grid {
         clear:both;
         background-color: white;
         margin: 0 auto;
         height: 70vh;
+        max-width: 900px;
         /*padding: 5px;*/
     }
 
@@ -119,11 +128,13 @@
                 <button type="button" name="checker" onclick="checkerGrid()">Checkerboard</button>
                 <button type="button" name="random" onclick="randomValues()">Random</button>
             </p>
-            <p>
+            <p id="main-buttons">
                 <button type="button" name="evolve" onclick="updateGrid()">Evolve once</button>
                 <button type="button" name="start" onclick="toggleEvolve(this)" value="stopped" id="startButton">
                     Start evolving</button>
-                <!-- Every <input type="number" name="milliseconds" min="100" max="5000" value="500"> ms -->
+                <small>
+                    fast <input type="range" name="speed" min="50" max="3000" value="500" id="speed"> slow
+                </small>
             </p>
         </div>
 
@@ -194,11 +205,12 @@
 
         function stopEvolving() {
             console.log("Ending evolution.");
+            clearInterval(interval);
             var button = document.getElementById("startButton");
             isRunning = false;
             button.value = "stopped";
             button.innerHTML = "Start evolving";
-            clearInterval(interval);
+            document.getElementById("speed").disabled = false;
         }
 
         function toggleEvolve(button) {
@@ -208,8 +220,11 @@
                 isRunning = true;
                 button.value = "running";
                 button.innerHTML = "Stop evolving";
-                console.log("Beginning evolution...");
-                interval = setInterval(function() { updateGrid(); }, 500);
+                var slider = document.getElementById("speed");
+                var speed = slider.value;
+                console.log("Beginning evolution... (", speed, "ms)");
+                slider.disabled = true;
+                interval = setInterval(function() { updateGrid(); }, speed);
             } else {
                 stopEvolving();
             }
