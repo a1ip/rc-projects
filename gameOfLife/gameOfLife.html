@@ -8,6 +8,7 @@
         font-family: sans-serif;
         background-color: #196464;
         color: white;
+        font-size: 1em;
     }
 
     main {
@@ -16,11 +17,9 @@
     }
 
     h1 a {
-        /*
-        text-align: center;
+        /*text-align: center;*/
         float:left;
-        margin-bottom:20px;
-        */
+        /*margin-bottom:20px;*/
         text-decoration: none;
         color:white;
     }
@@ -30,19 +29,35 @@
     }
 
     header {
-        max-width: 50%;
+        max-width:400px;
         float:left;
         padding-left: 10px;
+        font-size: 1.3em;
         /*border:1px solid white;*/
         /*text-align: center;*/
     }
 
-    button {
+    .instructions {
+        float:left;
+        padding-right: .5em;
+    }
+
+    button, input {
         padding: 5px;
+        background-color: white;
+        color: #196464;
+        border: 1px solid white;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+
+    button:active {
+        background-color:black;
+        color:white;
     }
 
     #controls {
-        min-width: 40%;
+        /*min-width: 40%;*/
         padding: 20px 10px;
         text-align: center;
         float:right;
@@ -53,7 +68,7 @@
         clear:both;
         background-color: white;
         margin: 0 auto;
-        height: 75vh;
+        height: 70vh;
         /*padding: 5px;*/
     }
 
@@ -85,7 +100,11 @@
         <header>
             <h1><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
                     title="Conway's Game of Life on Wikipedia">The Game of Life</a></h1>
-            <p>Black cells are alive, white ones are dead.<br>Click a cell to change its status.</p>
+
+            <p>
+                <div class="instructions">Black cells are alive, white ones are dead. </div>
+                <div class="instructions">Click a cell to change its status.</div>
+            </p>
         </header>
 
         <div id="controls">
@@ -102,7 +121,9 @@
             </p>
             <p>
                 <button type="button" name="evolve" onclick="updateGrid()">Evolve once</button>
-                <button type="button" name="start" onclick="startEvolving(this)">Start evolving</button>
+                <button type="button" name="start" onclick="toggleEvolve(this)" value="stopped" id="startButton">
+                    Start evolving</button>
+                <!-- Every <input type="number" name="milliseconds" min="100" max="5000" value="500"> ms -->
             </p>
         </div>
 
@@ -167,25 +188,51 @@
             randomValues();
         }
 
-        function startEvolving(button) {
-            var isRunning = true;
+        var isRunning = false; //tracks whether the thing is running
+        var interval; //holds the interval which will need to be cleared
 
-            button.innerHTML = "Stop evolving";
-            console.log(button.onclick);
-            button.onclick = function() {
-                console.log("clicked");
-                isRunning = false;
+
+        function stopEvolving() {
+            console.log("Ending evolution.");
+            var button = document.getElementById("startButton");
+            isRunning = false;
+            button.value = "stopped";
+            button.innerHTML = "Start evolving";
+            clearInterval(interval);
+        }
+
+        function toggleEvolve(button) {
+            console.log(button.value);
+
+            if (button.value === "stopped") {
+                isRunning = true;
+                button.value = "running";
+                button.innerHTML = "Stop evolving";
+                console.log("Beginning evolution...");
+                interval = setInterval(function() { updateGrid(); }, 500);
+            } else {
+                stopEvolving();
             }
-            console.log(button.onclick);
-            // while (isRunning) {
-            //     setTimeout(function() {
-            //         console.log(button.name);
-            //     }, 2000);
+
+            // var isRunning = true;
+            //
+            // button.innerHTML = "Stop evolving";
+            // console.log(button.onclick);
+            // button.onclick = function() {
+            //     console.log("clicked");
+            //     isRunning = false;
             // }
-            console.log(isRunning);
+            // console.log(button.onclick);
+            // // while (isRunning) {
+            // //     setTimeout(function() {
+            // //         console.log(button.name);
+            // //     }, 2000);
+            // // }
+            // console.log(isRunning);
         }
 
         function updateGrid() {
+            console.log("Updating grid");
             var allCells = document.getElementsByClassName("cell");
             var newStatuses = {}
             for (var i = 0; i < allCells.length; i++) {
@@ -312,6 +359,7 @@
         }
 
         function clearGrid() {
+            stopEvolving();
             var allCells = document.getElementsByClassName("cell");
             for (var i = 0; i < allCells.length; i++) {
                 allCells[i].classList.remove("alive");
@@ -319,6 +367,7 @@
         }
 
         function fillGrid() {
+            stopEvolving();
             var allCells = document.getElementsByClassName("cell");
             for (var i = 0; i < allCells.length; i++) {
                 allCells[i].classList.add("alive");
@@ -326,6 +375,7 @@
         }
 
         function checkerGrid() {
+            stopEvolving();
             var allCells = document.getElementsByClassName("cell");
             for (var i = 0; i < allCells.length; i++) {
                 var thisCell = allCells[i];
@@ -340,6 +390,7 @@
         }
 
         function randomValues() {
+            stopEvolving();
             var allCells = document.getElementsByClassName("cell");
             for (var i = 0; i < allCells.length; i++) {
                 var randomBool = Math.random() >= 0.5;
