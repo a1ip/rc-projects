@@ -42,9 +42,9 @@ def ht_init(size):
 
 # Interface functions
 def ht_set(key, value):
-    """Adds tuple (key, value) to the list at the address for key
+    """Adds tuple (key, value) to the list at the index for key
     in the hashtable.
-    Returns the number of items in the list at that address.
+    Returns the number of items in the list at that index.
     """
     print("setting ", key, " to ", value)
     index = my_hash(key) % sz
@@ -76,6 +76,10 @@ def ht_update(key, value):
             found_it = True
             ht[index].remove((k, v))
             ht[index].append((key, value))
+    # possibly faster approach:
+    # for (i, (k, v)) in enumerate(ht[index]):
+    #     if k == key:
+    #         ht[index][i] = (key, value)
     return found_it
 
 def ht_delete(key):

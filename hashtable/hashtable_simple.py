@@ -42,9 +42,9 @@ def ht_init(size):
 
 # Interface functions
 def ht_set(key, value):
-    """Adds value to the hashtable at the address for key.
+    """Adds value to the hashtable at the index for key.
     Returns True if the operation is successful.
-    Returns False if there is already something at that address.
+    Returns False if there is already something at that index.
     """
     index = my_hash(key) % sz
     if ht[index] != None:
