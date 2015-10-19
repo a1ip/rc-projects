@@ -1,19 +1,32 @@
-var DATA_FILE = "letters_new.tsv";
+var DATA_FILE = "test.tsv";
 var INITIAL_LANG = "French"
 
 function updateLanguage(language) {
 
     currentLang = language;
 
-    var data = letterData.map(function(d) {
-        return {Letter: d.Letter, frequency: d[language]};
-    });
+    var data = letterData
+        .filter(function(d) {
+            console.log("Letter: ", d.Letter, " Freq: ", d[language]);
+            if (+d[language] > 0) {
+                console.log("Keeping.");
+            } else {
+                console.log("Removing.");
+            }
+            return +d[language] > 0;
+        })
+        .map(function(d) {
+            console.log("d.Letter: ", d.Letter, "d[", language, "]: ", d[language]);
+            return {Letter: d.Letter, frequency: d[language]};
+        });
 
     // the TSV parser apparently reads in the column names, so we can use d.frequency
     yScale.domain([0, d3.max(data, function(d) { return d.frequency; })]);
     console.log("yScale.domain: ", yScale.domain());
 
-    xScale.domain(data.map(function(d) { return d.Letter; })); //gets an array of all the letters in the data
+    xScale.domain(data.map(function(d) {
+        return d.Letter;
+    })); //gets an array of all the letters in the data
 
     chart.select(".x").remove();
     chart.select(".y").remove();
@@ -23,6 +36,10 @@ function updateLanguage(language) {
     chart.append("g")
         .attr("class", "x axis")
         // .axis "rubber stamp" will be called in resize()
+      .append("text")
+        .style("text-anchor", "middle")
+        .style("font-size", "1.2em")
+        .text(String(data.length) + " Letters");
 
     chart.append("g")
         .attr("class", "y axis")
@@ -70,7 +87,7 @@ var currentLang = INITIAL_LANG
 
 
 
-var margin = {top: 20, right: 30, bottom: 30, left: 70};
+var margin = {top: 20, right: 30, bottom: 50, left: 70};
 var chartWidth = 960 - margin.left - margin.right; // gives inner width (after margins)
 var chartHeight = 500 - margin.top - margin.bottom; // gives inner height (after margins)
 
@@ -107,8 +124,10 @@ function resize() {
     // Re-draws axes and bars
 
     /* Find the new window dimensions */
-    var width = parseInt(d3.select("#chart").style("width")) - margin.left - margin.right,
-    height = parseInt(d3.select("#chart").style("height")) - margin.top - margin.bottom;
+    var svgWidth = parseInt(d3.select("#chart").style("width")),
+    svgHeight = parseInt(d3.select("#chart").style("height"));
+    var width = svgWidth - margin.left - margin.right,
+    height = svgHeight - margin.top - margin.bottom;
 
     console.log("new width: ", width, " new height: ", height);
 
@@ -120,8 +139,11 @@ function resize() {
 
     /* Update the axis with the new scale */
     chart.select('.x.axis')
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+      .select('text')
+        .attr("x", (width- margin.left)/2)
+        .attr("y", margin.bottom);
 
     chart.select('.y.axis')
       .call(yAxis);
@@ -140,11 +162,13 @@ d3.select(window).on('resize', resize);
 
 // LOAD DATA
 d3.tsv(DATA_FILE, type, function(error, data){
-    console.log(error);
-
+    if (error) {
+        console.log("ERROR: ", error);
+    }
 
     //Code here executes after data has loaded
     letterData = data;
+    console.log("letterData: ", letterData);
 
     // Set up selection options for each language in the dataset
     var selector = d3.select("#testSelect optgroup");
@@ -167,7 +191,9 @@ d3.tsv(DATA_FILE, type, function(error, data){
 
 // Code here executes while data is loading
 function type(d) {
+    console.log("type(", d, ")");
   Object.keys(d).forEach(function(lang) {
+      console.log("d[", lang, "]: ", d[lang]);
     if (lang === "Letter") return;
     d[lang] = +d[lang]; // coerces string (from tsv) to number
   });
