@@ -22,21 +22,20 @@ function updateLanguage(language) {
     // Add in axes
     chart.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + chartHeight + ")")
-        .call(xAxis); // produce x-axis using "rubber stamp" function
+        // .axis "rubber stamp" will be called in resize()
 
     chart.append("g")
         .attr("class", "y axis")
-        .call(yAxis) // produce y-axis using "rubber stamp" function
+        // axis "rubber stamp" will be called in resize()
       .append("text")
         .attr("transform", "rotate(-90)")
-        // .attr("x", -200)
-        .attr("y", 10)
+        .attr("y", "-70")
         .attr("dy", ".71em")
         .style("text-anchor", "end")
+        .style("font-size", "1.2em")
         .text("Frequency");
 
-    var barWidth = chartWidth / data.length; //bar width is now variable
+    //var barWidth = chartWidth / data.length; //bar width is now variable
 
     // make new selection for the update cycle
     var bar = chart.selectAll(".bar")
@@ -58,11 +57,10 @@ function updateLanguage(language) {
 
     // do stuff with update selection
     bar
-        .attr("x", function(d) { return xScale(d.Letter); })
-        .attr("y", function(d) { return yScale(d.frequency); })
-        .attr("width", xScale.rangeBand())
-        .attr("height", function(d) { return chartHeight - yScale(d.frequency); })
+        // bar positions and heights will be set in resize()
       .select("title").text(function(d) { return d.Letter + ": " + d.frequency + "%"; });
+
+    resize();
 
 
 }
@@ -72,7 +70,7 @@ var currentLang = INITIAL_LANG
 
 
 
-var margin = {top: 20, right: 30, bottom: 30, left: 60};
+var margin = {top: 20, right: 30, bottom: 30, left: 70};
 var chartWidth = 960 - margin.left - margin.right; // gives inner width (after margins)
 var chartHeight = 500 - margin.top - margin.bottom; // gives inner height (after margins)
 
@@ -106,6 +104,8 @@ var letterData; //can we declare it like this, without initial value?
 // RESPONSIVITY
 function resize() {
     /* Update graph using new width and height (code below) */
+    // Re-draws axes and bars
+
     /* Find the new window dimensions */
     var width = parseInt(d3.select("#chart").style("width")) - margin.left - margin.right,
     height = parseInt(d3.select("#chart").style("height")) - margin.top - margin.bottom;
@@ -126,14 +126,15 @@ function resize() {
     chart.select('.y.axis')
       .call(yAxis);
 
-    /* Force D3 to recalculate and update the line */
+    /* Force D3 to recalculate and update bars */
     chart.selectAll('.bar')
-      .attr("x", function(d) { return xScale(d.Letter); })
-      .attr("y", function(d) { return yScale(d.frequency); })
-      .attr("width", xScale.rangeBand())
-      .attr("height", function(d) { return height - yScale(d.frequency); });
+        .attr("x", function(d) { return xScale(d.Letter); })
+        .attr("y", function(d) { return yScale(d.frequency); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return height - yScale(d.frequency); })
 }
 
+// Resize graph when window is resized
 d3.select(window).on('resize', resize);
 
 
