@@ -2,6 +2,20 @@ body {
   font-family: sans-serif;
 }
 
+.wrapper {
+  /*min-width: 80%;*/
+  margin: auto;
+  text-align: center;
+  border: 1px solid green;
+}
+
+.title {
+  color: steelblue;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+
 .bar {
   fill: steelblue;
 }
@@ -11,7 +25,7 @@ body {
 }
 
 .axis text {
-  font: 12px sans-serif;
+  font: 1rem sans-serif;
 }
 
 .axis path,
