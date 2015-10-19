@@ -18,6 +18,9 @@ function updateLanguage(language) {
         .map(function(d) {
             console.log("d.Letter: ", d.Letter, "d[", language, "]: ", d[language]);
             return {Letter: d.Letter, frequency: d[language]};
+        })
+        .sort(function(a, b) {
+            return b.frequency - a.frequency;
         });
 
     // the TSV parser apparently reads in the column names, so we can use d.frequency
