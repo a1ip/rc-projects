@@ -34,10 +34,10 @@
         <div>
         <!-- <select id = "selectedLang" onchange="updateLanguage(this.options[this.selectedIndex].value)">
           <option value="Italian">Italian</option>
-          <option value="French">French</option> 
+          <option value="French">French</option>
           <option value="German">German</option>
         </select> -->
-        Relative frequency of letters in 
+        Relative frequency of letters in
         <select id = "testSelect" onchange="updateLanguage(this.options[this.selectedIndex].value)">
         </select>
         </div>
@@ -63,7 +63,7 @@
 
             currentLang = language;
 
-            var data = letterData.map(function(d) { 
+            var data = letterData.map(function(d) {
                 return {Letter: d.Letter, frequency: d[language]};
             });
 
@@ -106,7 +106,7 @@
 
             // make new selection for the update cycle
             var bar = chart.selectAll(".bar")
-                .data(data); 
+                .data(data);
 
             console.log("Update: ", data);
 
@@ -122,14 +122,14 @@
 
             console.log("Enter: ", bar.enter());
 
-            // do stuff with update selection 
+            // do stuff with update selection
             bar
                 .attr("x", function(d) { return xScale(d.Letter); })
                 .attr("y", function(d) { return yScale(d.frequency); })
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d) { return chartHeight - yScale(d.frequency); })
               .select("title").text(function(d) { return d.Letter + ": " + d.frequency + "%"; });
-              
+
 
         }
 
@@ -150,7 +150,7 @@
         var xScale = d3.scale.ordinal()
             .rangeRoundBands([0, chartWidth], .1); //divides chartWidth into evenly sized bands with padding of .1
 
-        
+
 
         var chart = d3.select(".chart")
             .attr("width", chartWidth + margin.left + margin.right) //make the chart element the outer width (chart data + margins)
@@ -179,7 +179,7 @@
                 .attr("value", lang)
                 .text(lang);
             });
-            
+
 
             // update graph with initial language
             updateLanguage(currentLang);
@@ -191,8 +191,8 @@
 
         // Code here executes while data is loading
         function type(d) {
-          Object.keys(d).forEach(function(lang) { 
-            if (lang === "Letter") return; 
+          Object.keys(d).forEach(function(lang) {
+            if (lang === "Letter") return;
             d[lang] = +d[lang]; // coerces string (from tsv) to number
           });
           return d;
