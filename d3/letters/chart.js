@@ -30,8 +30,8 @@ function updateLanguage(language) {
         .call(yAxis) // produce y-axis using "rubber stamp" function
       .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -200)
-        .attr("y", -60)
+        // .attr("x", -200)
+        .attr("y", 10)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Frequency");
@@ -115,6 +115,8 @@ function resize() {
     /* Update the range of the scale with new width/height */
     xScale.rangeRoundBands([0, width], .1);
     yScale.range([height, 0]).nice();
+
+    yAxis.ticks(Math.max(height/50, 2)); //places a tick mark every 50 pixels, minimum of 2 ticks
 
     /* Update the axis with the new scale */
     chart.select('.x.axis')
