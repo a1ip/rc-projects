@@ -6,6 +6,10 @@ import os
 CURRENT_DIR = os.getcwd()
 BACKUP_DIR = os.path.join(CURRENT_DIR, ".levcs")
 
+def checkout_latest():
+    latest = get_latest_version()
+    checkout(latest)
+
 def checkout(version):
     version_dir = os.path.join(BACKUP_DIR, str(version))
     if not os.path.isdir(version_dir):
@@ -70,3 +74,5 @@ if __name__ == "__main__":
             print "levcs.py checkout 1"
         else:
             checkout(version)
+    elif sys.argv[1] == "latest":
+        checkout_latest()
