@@ -1,0 +1,65 @@
+#!/usr/bin/python
+import sys
+import shutil
+import os
+
+CURRENT_DIR = os.getcwd()
+BACKUP_DIR = os.path.join(CURRENT_DIR, ".levcs")
+
+def checkout(version):
+    version_dir = os.path.join(BACKUP_DIR, str(version))
+    if not os.path.isdir(version_dir):
+        print "Version", version, "not found."
+    else:
+        print "Checking out version", version
+        # Delete everything in working dir EXCEPT .levcs/
+        to_remove = [f for f in os.listdir(CURRENT_DIR) if f != ".levcs"]
+        print to_remove
+
+        # for f in to_remove:
+        #     try:
+        #         os.remove(f)
+
+
+        # Copy everything in .levcs/version/ to working dir
+
+def make_backup():
+    print BACKUP_DIR
+
+    if not os.path.isdir(BACKUP_DIR):
+        version = 1
+    else:
+        version = get_next_version()
+
+    next_version_dir = os.path.join(BACKUP_DIR, str(version))
+
+    shutil.copytree(CURRENT_DIR, next_version_dir, ignore=shutil.ignore_patterns('.levcs*'))
+    print "Backed up to", next_version_dir
+
+def get_next_version():
+    return get_latest_version() + 1
+
+def get_latest_version():
+    return len(os.listdir(BACKUP_DIR))
+
+
+def print_help():
+    print "RTFM"
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) == 1:
+        print_help()
+
+    elif sys.argv[1] == "backup":
+        make_backup()
+
+    elif sys.argv[1] == "checkout":
+        try:
+            version = sys.argv[2]
+        except:
+            print "Please provide a version number, for example:"
+            print "levcs.py checkout 1"
+        else:
+            checkout(version)
