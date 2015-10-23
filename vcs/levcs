@@ -11,17 +11,24 @@ def checkout(version):
     if not os.path.isdir(version_dir):
         print "Version", version, "not found."
     else:
-        print "Checking out version", version
         # Delete everything in working dir EXCEPT .levcs/
         to_remove = [f for f in os.listdir(CURRENT_DIR) if f != ".levcs"]
-        print to_remove
-
-        # for f in to_remove:
-        #     try:
-        #         os.remove(f)
-
+        print "Removing:", to_remove
+        for f in to_remove:
+            try:
+                os.remove(f)
+            except OSError:
+                shutil.rmtree(f)
 
         # Copy everything in .levcs/version/ to working dir
+        print os.walk(version_dir).next()
+        root, dirs, files = os.walk(version_dir).next()
+        for d in dirs:
+            shutil.copytree(os.path.join(root, d), os.path.join(CURRENT_DIR, d))
+        for f in files:
+            shutil.copy(os.path.join(root, f), os.path.join(CURRENT_DIR, f))
+
+        print "Checked out version", version
 
 def make_backup():
     print BACKUP_DIR
