@@ -53,18 +53,43 @@ def test_create_with_existing():
 
 
 def test_add():
-    pass
+    # Setup
+    create_pb("test.pb")
+
+    # Test
+
+    # Teardown
 
 def test_lookup():
+    # Setup
+
+    # Test
+
+    # Teardown
     pass
 
 def test_reverse_lookup():
+    # Setup
+
+    # Test
+
+    # Teardown
     pass
 
 def test_change():
+    # Setup
+
+    # Test
+
+    # Teardown
     pass
 
 def test_remove():
+    # Setup
+
+    # Test
+
+    # Teardown
     pass
 
 
