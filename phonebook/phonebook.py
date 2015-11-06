@@ -26,8 +26,39 @@ def create_with_overwrite(filename):
     else:
         create_pb(filename)
 
+def read_phonebook(filename):
+    try:
+        with open(filename, 'r') as pb:
+            lines = pb.read().strip().split('\n')
+    except IOError:
+        print "Can't find", filename, "in this directory."
+    else:
+        pb_dict = dict()
+        if lines[0] != "Name,Number":
+            raise Exception("Incorrect header in " + filename + ". Operation canceled.")
+        for line in lines[1:]:
+            print line
+            [name, number] = line.split(',')
+            pb_dict[name] = number
+        return pb_dict
+
+def write_phonebook(pb_dict, filename):
+    try:
+        with open(filename, 'w') as pb:
+            pb.write("Name,Number\n")
+            for (name, number) in pb_dict.items():
+                pb.write(','.join([name, number]) + '\n')
+        return True
+    except Exception as e:
+        print "Could not save phonebook:", e
+        return False
+
+
+
 def add(name, number, filename):
-    pass
+    pb_dict = read_phonebook(filename)
+    # TODO
+    write_phonebook(pb_dict, filename)
 
 def lookup(name, filename):
     pass
