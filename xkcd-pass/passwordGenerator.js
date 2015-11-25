@@ -24,7 +24,7 @@ function getPassword(length) {
     for (i=0; i<length; i++) {
         var candidate = words[getRandomIndex()]
         console.log(candidate);
-        if (candidate.length > 3 && candidate.indexOf("-") === -1 && password.indexOf(candidate) === -1){
+        if (candidate.length > 3 && candidate.length < 13 && candidate.indexOf("-") === -1 && password.indexOf(candidate) === -1){
             console.log("accepting!")
             password.push(candidate.toLowerCase());
         }
