@@ -26,7 +26,7 @@ function getPassword(length) {
         console.log(candidate);
         if (candidate.length > 3 && candidate.indexOf("-") === -1 && password.indexOf(candidate) === -1){
             console.log("accepting!")
-            password.push(candidate);
+            password.push(candidate.toLowerCase());
         }
         else {
             console.log("rejecting!");
