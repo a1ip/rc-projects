@@ -23,13 +23,13 @@ function getPassword(length) {
     var password = [];
     for (i=0; i<length; i++) {
         var candidate = words[getRandomIndex()]
-        console.log(candidate);
+        // console.log(candidate);
         if (candidate.length > 3 && candidate.length < 13 && candidate.indexOf("-") === -1 && password.indexOf(candidate) === -1){
-            console.log("accepting!")
+            // console.log("accepting!")
             password.push(candidate.toLowerCase());
         }
         else {
-            console.log("rejecting!");
+            // console.log("rejecting!");
             i--;
         }
 
@@ -42,4 +42,4 @@ function displayPassword() {
     document.getElementById("password").innerHTML = pw;
 }
 
-console.log(getPassword(4));
+// console.log(getPassword(4));
