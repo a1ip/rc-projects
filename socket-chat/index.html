@@ -27,9 +27,13 @@
       var socket = io();
 
       var username;
-      $(document).ready(function() {
+      $(window).load(function() {
           username = prompt("Please enter your name");
           socket.emit('log on', username);
+      });
+
+      $(window).on('beforeunload', function() {
+        socket.emit('log off', username);
       });
 
       function appendMessage(msg) {
