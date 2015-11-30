@@ -32,15 +32,20 @@
           socket.emit('log on', username);
       });
 
+      function appendMessage(msg) {
+        $('#messages').append($('<li>').html('<span class="username"> '+ msg.username + '</span> ' + msg.message));
+      }
 
       $('form').submit(function(){
-        socket.emit('chat message', {'username': username, 'message': $('#m').val()});
+        var msg = {'username': username, 'message': $('#m').val()};
+        socket.emit('chat message', msg);
         $('#m').val('');
+        appendMessage(msg);
         return false;
       });
 
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').html('<span class="username"> '+ msg.username + '</span> ' + msg.message));
+        appendMessage(msg);
       });
 
       function userActivity(name, joinedOrLeft) {
